@@ -1,8 +1,9 @@
-import sys
+from collections import defaultdict
 
+#籤碼
 outcomes = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H']
 
-horizontal_edges = {}
+horizontal_edges = defaultdict(list)
 
 def initialize_horizontal_edges(filename):
     with open(filename, 'r') as file:
@@ -11,41 +12,29 @@ def initialize_horizontal_edges(filename):
             i = int(parts[0])
             j = int(parts[1])
             x = parts[2].strip()
+            horizontal_edges[i].append((j, x))
+            horizontal_edges[j].append((i, x))
 
-            horizontal_edges[f"{i}_{j}_{x}"] = (i - 1, j - 1, x)
+# DFS
+def dfs(current_axis, current_branch, visited):
+    visited.add((current_axis, current_branch))
 
-def traverse(start_axis):
-    current_axis = start_axis - 1
-    branches = ['r', 's', 't', 'u', 'v']
-    current_branch = 0
 
-    while current_branch < len(branches):
-        moved = False
-        for i in [-1, 1]:
-            next_axis = (current_axis + i + 8) % 8
-            edge_key = f"{current_axis + 1}_{next_axis + 1}_{branches[current_branch]}"
-            if edge_key in horizontal_edges:
-                current_axis = next_axis
-                moved = True
-                break
-        if not moved:
-            current_branch += 1
-    
-    return outcomes[current_axis]
-
+    next_edges = sorted(horizontal_edges[current_axis], key=lambda x: x[1])
+    for next_axis, branch in next_edges:
+        if branch > current_branch and (next_axis, branch) not in visited:
+            return dfs(next_axis, branch, visited)
+    return current_axis
 
 def main():
-    if len(sys.argv) != 2:
-        print("Usage: python main.py input.txt")
-        return
-
-    filename = sys.argv[1]
+    filename = "input.txt" 
     initialize_horizontal_edges(filename)
 
-    for i in range(1, 9):  
-        result = traverse(i)
-        print(f"No. {i} 參賽者之籤碼為[ {result} ]")
+    for i in range(1, 9):
+        visited = set()
+        result_axis = dfs(i, 'r', visited) 
+        result = outcomes[result_axis - 1]
+        print(f"No. {i} 参賽者之籤碼為[ {result} ]")
 
 if __name__ == "__main__":
     main()
-    
