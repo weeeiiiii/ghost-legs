@@ -1,46 +1,53 @@
-from collections import defaultdict, deque
+from collections import defaultdict
 
-outcomes = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H']
-horizontal_edges = defaultdict(list)
+class BaguaghostLeg:
+    def __init__(self):
+        self.horizontal_lines = defaultdict(dict)
 
-def initialize_horizontal_edges(filename):
-    with open(filename, 'r') as file:
-        for line in file:
-            parts = line.strip().split(',')
-            i = int(parts[0])
-            j = int(parts[1])
-            x = parts[2].strip()
-            horizontal_edges[i].append((j, x))
-            horizontal_edges[j].append((i, x))
+    def add_line(self, i, j, x):
+        self.horizontal_lines[x][i] = j
+        self.horizontal_lines[x][j] = i
 
-# BFS traversal
-def bfs(start):
-    visited = set()
-    visited.add(start)
-    queue = deque([start])
-    result = []
+    def dfs(self, current_node, visited, results, code_map):
+        visited.add(current_node)
+        results.append(code_map[current_node])  # Add current node result
 
-    while queue:
-        current_axis = queue.popleft()
-        result.append(current_axis)
+        # Get the edges sorted by the specified order ('r', 's', 't', 'u', 'v')
+        edges = sorted(self.horizontal_lines.keys())
+        for edge in edges:
+            if current_node in self.horizontal_lines[edge]:
+                next_node = self.horizontal_lines[edge][current_node]
+                if next_node not in visited:
+                    self.dfs(next_node, visited, results, code_map)
 
-        next_edges = sorted(horizontal_edges[current_axis], key=lambda x: outcomes.index(x[1]))
+    def get_results(self):
+        results = []
+        code_map = {1: 'A', 2: 'B', 3: 'C', 4: 'D', 5: 'E', 6: 'F', 7: 'G', 8: 'H'}
+        visited = set()
 
-        for next_axis, branch in next_edges:
-            if next_axis not in visited:
-                visited.add(next_axis)
-                queue.append(next_axis)
+        # Perform DFS from each starting node (1 to 8)
+        for start_node in range(1, 9):
+            if start_node not in visited:
+                self.dfs(start_node, visited, results, code_map)
 
-    return result
+        return results
+
+def read_input(file_path):
+    with open(file_path, 'r') as f:
+        lines = f.readlines()
+    bg_leg = BaguaghostLeg()
+    for line in lines:
+        if line.strip():
+            i, j, x = line.strip().split(',')
+            bg_leg.add_line(int(i), int(j), x.strip())
+    return bg_leg
 
 def main():
-    filename = "input.txt"
-    initialize_horizontal_edges(filename)
-
-    for i in range(1, 9):
-        result_order = bfs(i)
-        result = outcomes[result_order[-1] - 1]  
-        print(f"No. {i} 參賽者支籤碼為[ {result} ]")
+    input_file = 'input.txt'
+    bg_leg = read_input(input_file)
+    results = bg_leg.get_results()
+    for i, result in enumerate(results, start=1):
+        print(f"No. {i} 參賽者之籤碼為[{result}]")
 
 if __name__ == "__main__":
     main()

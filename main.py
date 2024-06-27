@@ -1,21 +1,20 @@
+from collections import defaultdict
+
 class BaguaghostLeg:
     def __init__(self):
-        self.horizontal_lines = {}
+        self.horizontal_lines = defaultdict(dict)
 
     def add_line(self, i, j, x):
-        if x not in self.horizontal_lines:
-            self.horizontal_lines[x] = {}
-        self.horizontal_lines[x][(i, j)] = True
-        self.horizontal_lines[x][(j, i)] = True
+        self.horizontal_lines[x][i] = j
+        self.horizontal_lines[x][j] = i
 
     def get_final_position(self, start):
         current_pos = start
-        for x in ['r', 's', 't', 'u', 'v']:
-            if x in self.horizontal_lines:
-                if (current_pos, current_pos % 8 + 1) in self.horizontal_lines[x]:
-                    current_pos = current_pos % 8 + 1
-                elif (current_pos, (current_pos - 2) % 8 + 1) in self.horizontal_lines[x]:
-                    current_pos = (current_pos - 2) % 8 + 1
+        for x in ['v', 'u', 't', 's', 'r']:
+            if current_pos in self.horizontal_lines[x]:
+                new_pos = self.horizontal_lines[x][current_pos]
+                #print(f"Moved from position {current_pos} to {new_pos} via {x}") 
+                current_pos = new_pos  
         return current_pos
 
 def read_input(file_path):
@@ -26,6 +25,7 @@ def read_input(file_path):
         if line.strip():
             i, j, x = line.strip().split(',')
             bg_leg.add_line(int(i), int(j), x.strip())
+            #print(f"Added line: {i}, {j}, {x.strip()}") 
     return bg_leg
 
 def main():
@@ -34,7 +34,9 @@ def main():
     results = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H']
     for i in range(1, 9):
         final_pos = bg_leg.get_final_position(i)
-        print(f"No. {i} 參賽者之籤碼為[{results[final_pos - 1]}]")
+        print(f"No. {i} 參賽者之籤碼為[{results[final_pos-1]}]")
 
 if __name__ == "__main__":
     main()
+
+
