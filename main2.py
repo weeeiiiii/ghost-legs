@@ -13,7 +13,7 @@ class BaguaghostLeg:
         else:
             print(f"無效的水平連接: {i}, {j}, {x}")
 
-    def get_final_position(self, start):
+    def final_position(self, start):
         current_pos = start
         print(f"開始於位置: {current_pos}")  
         for x in ['v', 'u', 't', 's', 'r']:
@@ -46,7 +46,7 @@ def main():
     
     results = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'][:num_participants]  
     for i in range(1, num_participants + 1):
-        final_pos = bg_leg.get_final_position(i)
+        final_pos = bg_leg.final_position(i)
         if 1 <= final_pos <= num_participants:
             print(f"No. {i} 參賽者之籤碼為[{results[final_pos-1]}]")
         else:
