@@ -48,6 +48,7 @@ def main():
     for i in range(1, num_participants + 1):
         final_pos = bg_leg.final_position(i)
         if 1 <= final_pos <= num_participants:
+            # TODO IndexError: list index out of range
             print(f"No. {i} 參賽者之籤碼為[{results[final_pos-1]}]")
         else:
             print(f"No. {i} 參賽者之籤碼為[無效位置]")
