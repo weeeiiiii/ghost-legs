@@ -13,7 +13,7 @@ class BaguaghostLeg:
         for x in ['v', 'u', 't', 's', 'r']:
             if current_pos in self.horizontal_lines[x]:
                 new_pos = self.horizontal_lines[x][current_pos]
-                print(f"Moved from position {current_pos} to {new_pos} via {x}") 
+                #print(f"Moved from position {current_pos} to {new_pos} via {x}") 
                 current_pos = new_pos  
         return current_pos
 

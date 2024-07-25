@@ -42,6 +42,10 @@ def main():
     num_edges = int(input("請輸入邊數: "))
     num_participants = int(input("請輸入參賽者數量: "))
     
+    if num_participants > num_edges :
+        print(f"超出參賽者數量，目前最多{num_edges}個參賽者。")
+        return 
+    
     bg_leg = read_input(input_file, num_edges, num_participants)
     
     results = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'][:num_participants]  
